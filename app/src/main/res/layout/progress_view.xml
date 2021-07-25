@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progress_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9F252424"
+    android:clickable="false"
+    android:focusable="false"
+    android:visibility="gone"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:indeterminate="true"
+        app:layout_collapseMode="pin"
+        app:spb_color="#F10707"
+        app:spb_sections_count="3" />
+</FrameLayout>
