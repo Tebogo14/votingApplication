@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.votingapplication.R
 import com.example.votingapplication.Vote
+import com.example.votingapplication.models.SubjectArgument
 
 class Argment_Fragment(private val context: Context, private val arrayList: java.util.ArrayList<String>) :
 BaseAdapter() {

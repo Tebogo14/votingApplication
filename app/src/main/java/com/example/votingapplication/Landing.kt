@@ -1,24 +1,28 @@
 package com.example.votingapplication
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.votingapplication.databinding.LandingPageBinding
 import com.example.votingapplication.fragment.Landing_fragment
+import com.example.votingapplication.models.Const
+import com.example.votingapplication.models.Subject
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class Landing : AppCompatActivity() {
 
     private lateinit var binding: LandingPageBinding
 
-    var arrayList: ArrayList<String> = ArrayList()
+    var arrayList: ArrayList<Subject> = ArrayList()
     var adapter: Landing_fragment? = null
+    val c:Const = Const()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,19 +30,46 @@ class Landing : AppCompatActivity() {
         binding = LandingPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val userid = getIntent().getStringExtra("userId")
+
         val listview = findViewById<ListView>(binding.lvsubject.id)
+        val queue: RequestQueue = Volley.newRequestQueue(this)
 
-        arrayList.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu cursus diam. Vivamus pulvinar lacus lorem, vitae egestas risus egestas et. Aliquam gravida in nulla in molestie")
-        arrayList.add("TMorbi viverra dui vulputate porttitor pellentesque. Curabitur mattis metus nec nisi ultricies, ac consequat mi fermentum. Aliquam blandit lacus est, ac aliquam mi ultricies ac.")
-        arrayList.add("Aliquam vehicula ac dui non egestas. Duis rhoncus turpis quis augue iaculis, id vehicula nunc ullamcorper Mauris eros nulla, vestibulum ut maximus eget, dictum vel purus. Integer eget mauris eu nisl lobortis")
-        arrayList.add("Nulla facilisi. In venenatis dui at finibus malesuada. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nulla varius erat a dolor efficitur tempor.")
+        val url =  c.host +"/api/Vote/getVoteSubjects?userId=" + userid
 
-        adapter = Landing_fragment(this, arrayList);
-        listview.adapter = adapter
+        val stringRequest = StringRequest(Request.Method.GET, url,
+            Response.Listener<String> { response ->
+
+                val json = JSONArray(response)
+
+                for (i in 0 until json.length()) {
+
+                    val subject:Subject = Subject()
+
+                    subject.description = json.getJSONObject(i).getString("description")
+                    subject.title = json.getJSONObject(i).getString("title")
+                    subject.subjectArgument = json.getJSONObject(i).getJSONArray("subjectArguments")
+
+                    arrayList.add(subject)
+                }
+
+                adapter = Landing_fragment(this, arrayList);
+                listview.adapter = adapter
+            },
+            Response.ErrorListener { error ->
+                // Handle error
+                Toast.makeText(this, "Username and Password does not exist", Toast.LENGTH_LONG).show()
+                print(error)
+            })
+            queue.add(stringRequest)
+
+
 
     }
 
 
 }
+
+
 
 

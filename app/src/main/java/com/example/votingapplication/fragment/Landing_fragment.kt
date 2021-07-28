@@ -12,8 +12,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.votingapplication.Arguments
 import com.example.votingapplication.R
+import com.example.votingapplication.models.Subject
+import com.example.votingapplication.models.SubjectArgument
 
-class Landing_fragment (private val context: Context, private val arrayList: java.util.ArrayList<String>) :
+class Landing_fragment (private val context: Context, private val arrayList: java.util.ArrayList<Subject>) :
     BaseAdapter() {
 
     override fun getCount(): Int {
@@ -32,16 +34,29 @@ class Landing_fragment (private val context: Context, private val arrayList: jav
         var convertView = convertView
         convertView = LayoutInflater.from(context).inflate(R.layout.fragment_subject, parent, false)
 
-        val subject = convertView.findViewById<TextView>(R.id.textView3)
+        val description = convertView.findViewById<TextView>(R.id.textView3)
+        val title = convertView.findViewById<TextView>(R.id.textView2)
 
-        subject.text = arrayList[position];
+        description.text = arrayList.get(position).description;
+        title.text = arrayList.get(position).title
+
+
+        val subjectArguments: ArrayList<String> = ArrayList()
+
+        for (i in 0 until arrayList.get(position).subjectArgument.length()) {
+
+            if(arrayList.get(position).subjectArgument.length() != 0) {
+                subjectArguments.add(arrayList.get(position).subjectArgument.getJSONObject(i)
+                        .getString("argument"))
+            }
+        }
 
         var viewButton = convertView.findViewById<Button>(R.id.btnviewArg)
 
         viewButton.setOnClickListener {
-            Toast.makeText(context, subject.text, Toast.LENGTH_SHORT).show()
             val intent = Intent(context, Arguments::class.java)
-            intent.putExtra("subject", subject.text.toString())
+            intent.putExtra("subject", description.text.toString())
+            intent.putExtra("subjectArgument", subjectArguments)
             ContextCompat.startActivity(context, intent, null)
         }
 
